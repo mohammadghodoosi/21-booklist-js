@@ -25,7 +25,7 @@ class UI{
   showAlert(message){
     const div=document.createElement('div')
     const parent=document.getElementById('parent')
-    div.className='bg-success text-center container card '
+    div.className='bg-success text-center'
     div.appendChild(document.createTextNode(message))
     parent.insertBefore(div,form)
     setTimeout(function(){div.remove()},3000)
@@ -43,8 +43,7 @@ class UI{
       this.showAlert('book deleted...')
     }
   }
-}
-
+};
 //Store Class for resisting the data in LocalStorage
 class Store{
   //first method is for building the base for LS or for getting the data of LS as array
@@ -84,6 +83,33 @@ class Store{
     localStorage.setItem('books',JSON.stringify(books))
   }
 }
+//choosing and adding event handler to form element
+const form=document.getElementById('book-form')
+const btn=document.getElementById('btn')
+const ui=new UI
+const store=new Store
+btn.addEventListener('click',function(e){
+  //getting the data from the fields and calling proper method classes 
+  const title=document.getElementById('title').value;
+  const author=document.getElementById('author').value;
+  const isbn=document.getElementById('isbn').value ;
+  const book=new Book(title,author,isbn)
+  if(title!==''&&author!==''&&isbn!==''){
+    ui.addToList(book)
+    ui.clearFields()
+    store.sendToLS(book)
+  }else{ui.showAlert('fill all the field...')}
+ e.preventDefault()
+})
+//adding eventlistener to table area whenever is clicked and use event delegation to reach X. then calling proper method
+document.getElementById('table-book').addEventListener('click',function(e){
+  ui.clearRow(e.target)
+  store.delete(e.target.parentElement.previousElementSibling.textContent)
+})
+//adding event listener for whenever the page renders
+document.addEventListener('DOMContent',store.display())
+
+
 
 
 
